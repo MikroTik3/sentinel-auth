@@ -1,0 +1,29 @@
+import { Injectable } from '@nestjs/common'
+
+import { BaseService } from '../base/base.service'
+import type { BaseUserInfo, GoogleProfile, ProviderOptions } from '../interfaces'
+import { AllowedProvider } from '../enums'
+
+@Injectable()
+export class GoogleProvider extends BaseService {
+	public constructor(options: ProviderOptions) {
+		super({
+			name: AllowedProvider.GOOGLE,
+			authorizeUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
+			accessUrl: 'https://oauth2.googleapis.com/token',
+			profileUrl: 'https://www.googleapis.com/oauth2/v3/userinfo',
+			scopes: options.scopes,
+			clientId: options.clientId,
+			clientSecret: options.clientSecret
+		})
+	}
+
+	public async extractUserInfo(data: GoogleProfile): Promise<BaseUserInfo> {
+		return super.extractUserInfo({
+			id: data.sub,
+			name: data.given_name,
+			email: data.email,
+                     avatar: data.picture
+		})
+	}
+}
