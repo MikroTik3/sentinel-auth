@@ -16,9 +16,13 @@
               "@nestjs/common": "^11.1.6",
               "@nestjs/core": "^11.1.6",
               "express": "^5.1.0",
+              "jose": "^6.2.12",
               "reflect-metadata": "^0.2.2",
               "rxjs": "^7.8.2"
        },
        "author": "Mikrotik",
-       "license": "MIT"
+       "license": "MIT",
+       "devDependencies": {
+              "@types/node": "^26.6.2"
+       }
 }
