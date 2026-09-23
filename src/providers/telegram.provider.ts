@@ -25,7 +25,7 @@ export class TelegramProvider extends BaseService {
 
        public async extractUserInfo(data: TelegramProfile): Promise<BaseUserInfo> {
               return super.extractUserInfo({
-                     id: String(data.id), // именно id, а не sub — это настоящий Telegram user id
+                     id: String(data.id),
                      username: data.preferred_username,
                      name: data.name,
                      firstName: data.given_name,

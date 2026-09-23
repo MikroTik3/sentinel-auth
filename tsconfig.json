@@ -1,17 +1,23 @@
 {
   "compilerOptions": {
     "types": ["node"],
+
     "module": "commonjs",
+    "target": "es2017",
+
+    "rootDir": "./src",
+    "outDir": "./dist",
+
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es2017",
+
     "sourceMap": true,
-    "outDir": "./dist",
     "incremental": true,
     "skipLibCheck": true,
+
     "strictNullChecks": false,
     "noImplicitAny": false,
     "strictBindCallApply": false,
