@@ -1,6 +1,6 @@
 {
-       "name": "sentinel-oauth",
-       "version": "1.1.9",
+       "name": "sentinel-auth",
+       "version": "1.2.0",
        "description": "Unified authentication module",
        "main": "dist/index.js",
        "types": "dist/index.d.ts",
