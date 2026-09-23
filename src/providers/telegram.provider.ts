@@ -1,4 +1,3 @@
-// telegram.provider.ts
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { createRemoteJWKSet, jwtVerify } from 'jose'
 

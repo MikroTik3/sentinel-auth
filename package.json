@@ -1,5 +1,5 @@
 {
-       "name": "sentinel-auth",
+       "name": "@docenko/sentinel-auth",
        "version": "1.2.1",
        "description": "Unified authentication module",
        "main": "dist/index.js",
