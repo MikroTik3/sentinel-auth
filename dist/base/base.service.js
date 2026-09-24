@@ -67,7 +67,7 @@ let BaseService = class BaseService {
         return Object.assign(Object.assign({}, userData), { accessToken: tokens.access_token, refreshToken: tokens.refresh_token, expiry: tokens.expiresAt || tokens.expires_in, provider: this.options.name });
     }
     getRedirectUrl() {
-        return `${this._baseUrl}/api/v1/auth/sso/callback/${this.options.name}`;
+        return `${this._baseUrl}/auth/sso/callback/${this.options.name}`;
     }
     set baseUrl(value) {
         this._baseUrl = value;
