@@ -23,7 +23,7 @@ export class GoogleProvider extends BaseService {
 			id: data.sub,
 			name: data.given_name,
 			email: data.email,
-                     avatar: data.picture
+                  avatar: data.picture
 		})
 	}
 }
