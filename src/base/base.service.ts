@@ -1,10 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 
-import type { BaseProviderOptions, BaseUserInfo } from '../interfaces'
+import type { BaseProviderOptions, BaseUserInfo, TelegramProfile } from '../interfaces'
+import { createRemoteJWKSet, jwtVerify } from 'jose'
+import { AllowedProvider } from '../enums'
 
 @Injectable()
 export class BaseService {
 	private _baseUrl: string
+	private readonly jwks = createRemoteJWKSet(new URL('https://oauth.telegram.org/.well-known/jwks.json'))
 
 	public constructor(private readonly options: BaseProviderOptions) {}
 
@@ -30,6 +33,8 @@ export class BaseService {
 	public async getUserByCode(code: string): Promise<BaseUserInfo> {
 		const clientId = this.options.clientId
 		const clientSecret = this.options.clientSecret
+
+		const credentials = Buffer.from(`${clientId}:${clientSecret}`).toString('base64')
 
 		const tokensQuery = new URLSearchParams({
 			client_id: clientId,
@@ -58,9 +63,15 @@ export class BaseService {
 			throw new BadRequestException(`No tokens ${this.options.accessUrl}`)
 		}
 
+		const isTelegram = this.options.name === AllowedProvider.TELEGRAM
+
+		if (!isTelegram && !tokens.id_token) {
+			throw new BadRequestException(`No id_token in ${this.options.name} response`)
+		}
+
 		const userRequest = await fetch(this.options.profileUrl, {
 			headers: {
-				Authorization: `Bearer ${tokens.access_token}`
+				Authorization: isTelegram ? `Bearer ${tokens.access_token}` : `Basic ${credentials}`
 			}
 		})
 
@@ -70,7 +81,9 @@ export class BaseService {
 
 		const user = await userRequest.json()
 
-		const userData = await this.extractUserInfo(user)
+		const claims = isTelegram ? null : await this.verifyIdToken(tokens.id_token)
+
+		const userData = await this.extractUserInfo(isTelegram ? user : claims)
 
 		return {
 			...userData,
@@ -79,6 +92,15 @@ export class BaseService {
 			expiry: tokens.expiresAt || tokens.expires_in,
 			provider: this.options.name
 		}
+	}
+
+	public async verifyIdToken(idToken: string): Promise<TelegramProfile> {
+		const { payload } = await jwtVerify(idToken, this.jwks, {
+			issuer: 'https://oauth.telegram.org',
+			audience: this.options.clientId
+		})
+
+		return payload as unknown as TelegramProfile
 	}
 
 	public getRedirectUrl() {
